@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Where 2 Go</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_game_activiy">GameActiviy</string>
+    <string name="title_activity_place_activiy">PlaceActiviy</string>
+    <string name="title_activity_review">ReviewActivity</string>
+
+</resources>
