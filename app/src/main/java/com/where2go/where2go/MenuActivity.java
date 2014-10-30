@@ -1,25 +1,37 @@
 package com.where2go.where2go;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
-public class GameActiviy extends Activity {
+public class MenuActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_activiy);
+        setContentView(R.layout.activity_menu_activiy);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.game_activiy, menu);
+        getMenuInflater().inflate(R.menu.menu_activiy, menu);
         return true;
+    }
+
+    public void letsPlay(View v){
+        Intent game = new Intent(this, GameActivity.class);
+        startActivity(game);
+    }
+
+    public void favs(View v){
+        Intent favs = new Intent(this, FavsActivity.class);
+        startActivity(favs);
     }
 
     @Override

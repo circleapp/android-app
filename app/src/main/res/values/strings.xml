@@ -7,5 +7,8 @@
     <string name="title_activity_game_activiy">GameActiviy</string>
     <string name="title_activity_place_activiy">PlaceActiviy</string>
     <string name="title_activity_review">ReviewActivity</string>
+    <string name="jugar">Jugar</string>
+    <string name="favs">Favoritos</string>
+    <string name="title_activity_favs">FavsActivity</string>
 
 </resources>
