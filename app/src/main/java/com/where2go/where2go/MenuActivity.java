@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 
 public class MenuActivity extends Activity {
@@ -32,6 +34,14 @@ public class MenuActivity extends Activity {
     public void favs(View v){
         Intent favs = new Intent(this, FavsActivity.class);
         startActivity(favs);
+    }
+
+    public void loginFacebook(View v){
+        ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
+        Button facebookBtn = (Button) findViewById(R.id.facebook_btn);
+        facebookBtn.setVisibility(View.GONE);
+        pb.setVisibility(View.VISIBLE);
+
     }
 
     @Override
