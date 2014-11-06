@@ -39,9 +39,12 @@ public class MenuActivity extends Activity {
     public void loginFacebook(View v){
         ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
         Button facebookBtn = (Button) findViewById(R.id.facebook_btn);
+        Button playBtn = (Button) findViewById(R.id.play_btn);
+        Button favoritesBtn = (Button) findViewById(R.id.favorites);
         facebookBtn.setVisibility(View.GONE);
-        pb.setVisibility(View.VISIBLE);
-
+        //pb.setVisibility(View.VISIBLE);
+        playBtn.setVisibility(View.VISIBLE);
+        favoritesBtn.setVisibility(View.VISIBLE);
     }
 
     @Override
