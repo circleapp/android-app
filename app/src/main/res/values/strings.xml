@@ -11,4 +11,5 @@
     <string name="favs">Favoritos</string>
     <string name="title_activity_favs">Favoritos</string>
     <string name="facebook">Facebook</string>
+    <string name="facebook_app_id">748940688492803</string>
 </resources>
