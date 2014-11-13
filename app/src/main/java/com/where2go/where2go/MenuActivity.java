@@ -21,10 +21,12 @@ public class MenuActivity extends Activity {
 
     protected App app;
 
+    private static final String LOG_TAG = "MenuActivity";
     protected ProgressBar pb;
-    public Button facebookBtn;
+    protected Button facebookBtn;
     protected Button playBtn;
     protected Button favoritesBtn;
+    protected Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class MenuActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_activiy);
 
+        menu = null;
         app = (App) this.getApplicationContext();
         pb = (ProgressBar) findViewById(R.id.progressBar);
         facebookBtn = (Button) findViewById(R.id.facebook_btn);
@@ -40,11 +43,37 @@ public class MenuActivity extends Activity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(app.isUserLogged()){
+            toggleUI(true);
+        }
+    }
+
+    private void toggleUI(boolean userLogged){
+        if(userLogged){
+            pb.setVisibility(View.GONE);
+            facebookBtn.setVisibility(View.GONE);
+            playBtn.setVisibility(View.VISIBLE);
+            favoritesBtn.setVisibility(View.VISIBLE);
+        }else{
+            facebookBtn.setVisibility(View.VISIBLE);
+            playBtn.setVisibility(View.GONE);
+            favoritesBtn.setVisibility(View.GONE);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_activiy, menu);
+        if(app.isUserLogged()){
+            menu.setGroupVisible(R.id.group_menu, true);
+        }else{
+            menu.setGroupVisible(R.id.group_menu, false);
+        }
         return true;
     }
 
@@ -54,7 +83,8 @@ public class MenuActivity extends Activity {
     }
 
     public void favs(View v) {
-        Intent favs = new Intent(this, FavsActivity.class);
+        //Intent favs = new Intent(this, FavsActivity.class);
+        Intent favs = new Intent(this, PlaceActivity.class);
         startActivity(favs);
     }
 
@@ -74,18 +104,13 @@ public class MenuActivity extends Activity {
                 pb.setVisibility(View.GONE);
                 if (user == null) {
                     facebookBtn.setVisibility(View.VISIBLE);
-                } else if (user.isNew()) {
-                    app.user = user;
-                    playBtn.setVisibility(View.VISIBLE);
-                    favoritesBtn.setVisibility(View.VISIBLE);
-                } else {
-                    app.user = user;
-                    playBtn.setVisibility(View.VISIBLE);
-                    favoritesBtn.setVisibility(View.VISIBLE);
+                } else { //mUser.isNew()
+                    app.loginUser(user);
+                    menu.setGroupVisible(R.id.group_menu, true);
+                    toggleUI(true);
                 }
             }
         });
-
     }
 
     @Override
@@ -95,13 +120,14 @@ public class MenuActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_logout) {
-            app.user.logOut();
+            app.mUser.logOut();
 
             if(ParseUser.getCurrentUser() == null){
                 facebookBtn.setVisibility(View.VISIBLE);
                 playBtn.setVisibility(View.GONE);
                 favoritesBtn.setVisibility(View.GONE);
-                app.user = null;
+                app.logoutUser();
+                menu.setGroupVisible(R.id.group_menu, false);
             }
 
             return true;

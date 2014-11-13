@@ -36,14 +36,19 @@
         </activity>
         <activity
             android:name=".PlaceActivity"
-            android:label="@string/title_activity_place_activiy">
+            android:label="@string/title_activity_place_activiy"
+            android:parentActivityName=".MenuActivity"
+            android:theme="@style/OverlayActionBarTheme">
         </activity>
         <activity
             android:name=".ReviewActivity"
-            android:label="@string/title_activity_review"></activity>
+            android:label="@string/title_activity_review">
+        </activity>
         <activity
             android:name=".FavsActivity"
-            android:label="@string/title_activity_favs"></activity>
+            android:label="@string/title_activity_favs"
+            android:parentActivityName=".MenuActivity">
+            </activity>
     </application>
 
 </manifest>

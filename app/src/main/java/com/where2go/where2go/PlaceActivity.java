@@ -1,9 +1,14 @@
 package com.where2go.where2go;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 
 
 public class PlaceActivity extends Activity {
@@ -12,8 +17,19 @@ public class PlaceActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_activiy);
+
+        FragmentManager man = getFragmentManager();
+        FragmentTransaction trans = man.beginTransaction();
+
+        PlaceFragment placeFragment = new PlaceFragment();
+
+        trans.add(R.id.fragment_view, placeFragment);
+        trans.commit();
     }
 
+    public void onFragmentInteraction(Uri uri){
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
