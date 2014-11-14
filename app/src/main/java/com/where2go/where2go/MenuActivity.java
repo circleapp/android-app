@@ -10,10 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.where2go.sdk.Place;
 
 
 public class MenuActivity extends Activity {
@@ -84,8 +88,15 @@ public class MenuActivity extends Activity {
 
     public void favs(View v) {
         //Intent favs = new Intent(this, FavsActivity.class);
-        Intent favs = new Intent(this, PlaceActivity.class);
-        startActivity(favs);
+        ParseQuery<ParseObject> place = ParseQuery.getQuery("Place");
+        place.getInBackground("BvaY9PC4v5", new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                Intent favs = new Intent(MenuActivity.this, PlaceActivity.class);
+                favs.putExtra("place", new Place(parseObject));
+                startActivity(favs);
+            }
+        });
     }
 
     @Override
