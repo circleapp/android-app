@@ -9,16 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.FrameLayout;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.where2go.sdk.Place;
-
-import java.util.List;
+import com.where2go.api.Place;
 
 
 public class PlaceActivity extends Activity {
@@ -29,7 +21,6 @@ public class PlaceActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_activiy);
-
         //Put Fragment on place
         FragmentManager man = getFragmentManager();
         FragmentTransaction trans = man.beginTransaction();
@@ -43,6 +34,7 @@ public class PlaceActivity extends Activity {
         Place place = (Place) intent.getSerializableExtra("place");
 
         Log.i(LOG_TAG, place.getName());
+
 /*        ParseQuery<ParseObject> places = ParseQuery.getQuery("Place");
         places.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -54,8 +46,14 @@ public class PlaceActivity extends Activity {
         });*/
     }
 
-    public void onFragmentInteraction(Uri uri){
+    public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.push_left_in_null, R.anim.push_left_out);
     }
 
     @Override
@@ -72,6 +70,9 @@ public class PlaceActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        }else if(id == android.R.id.home){
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);

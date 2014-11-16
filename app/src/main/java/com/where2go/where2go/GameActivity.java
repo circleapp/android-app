@@ -6,9 +6,13 @@ import android.app.DialogFragment;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
@@ -27,13 +31,15 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseGeoPoint;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
+import com.where2go.api.Where2GoAPI;
+import com.where2go.api.responses.TreeResponse;
 
-import java.util.List;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 public class GameActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
@@ -56,12 +62,38 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
         mLocationClient = new LocationClient(this, this, this);
         mLocationClient.connect();
 
-
     }
 
+    protected Callback<TreeResponse> treeCallback = new Callback<TreeResponse>() {
+        @Override
+        public void success(TreeResponse treeResponse, Response response) {
+            Toast.makeText(GameActivity.this, "We did it!!!", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            Toast.makeText(GameActivity.this, "Game start failed" + error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    /*
+     * Called by Location Services when the request to connect the
+     * client finishes successfully. At this point, you can
+     * request the current location or start periodic updates
+     */
     @Override
-    protected void onStart(){
-        super.onStart();
+    public void onConnected(Bundle dataBundle) {
+        mLocation = mLocationClient.getLastLocation();
+        if(mLocation != null){
+            double latitude = mLocation.getLatitude();
+            double longitude = mLocation.getLongitude();
+            int radius = 10;
+            Where2GoAPI api = new Where2GoAPI();
+            api.getTree(latitude, longitude, radius, treeCallback);
+            Toast.makeText(this, String.valueOf(latitude) + "," + String.valueOf(longitude), Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "No location found!", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -70,6 +102,12 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
         // Disconnecting the client invalidates it.
         mLocationClient.disconnect();
         super.onStop();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.push_right_in_null, R.anim.push_right_out);
     }
 
     @Override
@@ -86,6 +124,9 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        }else if(id == android.R.id.home){
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -237,28 +278,6 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
         }
 
         return false;
-    }
-
-    /*
- * Called by Location Services when the request to connect the
- * client finishes successfully. At this point, you can
- * request the current location or start periodic updates
- */
-    @Override
-    public void onConnected(Bundle dataBundle) {
-        mLocation = mLocationClient.getLastLocation();
-        ParseQuery<ParseObject> places = ParseQuery.getQuery("Place");
-        Log.i(LOG_TAG, mLocation.toString());
-        places.whereWithinKilometers("location", new ParseGeoPoint(mLocation.getLatitude(), mLocation.getLongitude()), 0.2);
-
-        places.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-                for(ParseObject place : parseObjects){
-                    Log.i(LOG_TAG, place.getString("name"));
-                }
-            }
-        });
     }
 
     /*

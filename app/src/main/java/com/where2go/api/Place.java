@@ -1,4 +1,4 @@
-package com.where2go.sdk;
+package com.where2go.api;
 
 import com.parse.ParseObject;
 

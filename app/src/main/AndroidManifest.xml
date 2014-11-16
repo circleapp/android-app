@@ -36,7 +36,8 @@
 
         <activity
             android:name=".GameActivity"
-            android:label="@string/title_activity_game_activiy">
+            android:label="@string/title_activity_game_activiy"
+            android:theme="@style/NoActionBar">
         </activity>
         <activity
             android:name=".PlaceActivity"

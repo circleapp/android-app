@@ -3,7 +3,6 @@ package com.where2go.where2go;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +16,7 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.where2go.sdk.Place;
+import com.where2go.api.Place;
 
 
 public class MenuActivity extends Activity {
@@ -44,7 +43,19 @@ public class MenuActivity extends Activity {
         facebookBtn = (Button) findViewById(R.id.facebook_btn);
         playBtn = (Button) findViewById(R.id.play_btn);
         favoritesBtn = (Button) findViewById(R.id.favorites);
+/*        try {
 
+            PackageInfo info = getPackageManager().getPackageInfo("com.where2go.where2go", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }*/
     }
 
     @Override
@@ -84,6 +95,7 @@ public class MenuActivity extends Activity {
     public void letsPlay(View v) {
         Intent game = new Intent(this, GameActivity.class);
         startActivity(game);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out_null);
     }
 
     public void favs(View v) {
@@ -95,6 +107,7 @@ public class MenuActivity extends Activity {
                 Intent favs = new Intent(MenuActivity.this, PlaceActivity.class);
                 favs.putExtra("place", new Place(parseObject));
                 startActivity(favs);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out_null);
             }
         });
     }
