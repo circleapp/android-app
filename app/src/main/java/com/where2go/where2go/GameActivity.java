@@ -6,13 +6,9 @@ import android.app.DialogFragment;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
@@ -31,11 +27,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.where2go.api.Where2GoAPI;
+import com.where2go.api.objects.Place;
 import com.where2go.api.responses.TreeResponse;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -50,6 +48,8 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
     protected boolean connected = false;
     protected LocationClient mLocationClient;
     protected Location mLocation;
+    protected Place mTree;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +68,13 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
         @Override
         public void success(TreeResponse treeResponse, Response response) {
             Toast.makeText(GameActivity.this, "We did it!!!", Toast.LENGTH_SHORT).show();
+            if(treeResponse.error == null){
+
+                Log.i(LOG_TAG, String.valueOf(treeResponse.results.size()));
+                if(treeResponse.results.size() > 0){
+                    mTree = treeResponse.results.get(0);
+                }
+            }
         }
 
         @Override
@@ -87,10 +94,9 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
         if(mLocation != null){
             double latitude = mLocation.getLatitude();
             double longitude = mLocation.getLongitude();
-            int radius = 10;
+            int radius = 100;
             Where2GoAPI api = new Where2GoAPI();
             api.getTree(latitude, longitude, radius, treeCallback);
-            Toast.makeText(this, String.valueOf(latitude) + "," + String.valueOf(longitude), Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this, "No location found!", Toast.LENGTH_SHORT).show();
         }
@@ -181,6 +187,12 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
                     view.setVisibility(View.VISIBLE);
                     if(v == findViewById(R.id.positive)){
                         pregunta.setText("Sí.");
+
+                        Intent favs = new Intent(GameActivity.this, PlaceActivity.class);
+                        favs.putExtra("place", mTree);
+                        startActivity(favs);
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out_null);
+
                         //icono.setVisibility(View.GONE);
                     }
                     if(v == findViewById(R.id.negative)){

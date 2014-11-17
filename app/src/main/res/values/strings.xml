@@ -14,6 +14,15 @@
     <string name="action_logout">Salir</string>
     <string name="facebook_app_id">748940688492803</string>
     <string name="pregunta">¿Vas solo?</string>
+    <string name="next_place">Siguiente</string>
+    <string name="write_review">Reseña</string>
+    <string name="finish">Salir</string>
+    <string name="fav">Favorito</string>
+    <string name="title">Titulo</string>
+    <string name="description">Descripcion</string>
+    <string name="review_label">Escribe tu reseña:</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cancel">Cancelar</string>
+    <string name="submit">Send</string>
 
 </resources>

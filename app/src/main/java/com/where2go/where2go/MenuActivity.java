@@ -16,7 +16,6 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.where2go.api.Place;
 
 
 public class MenuActivity extends Activity {
@@ -94,22 +93,15 @@ public class MenuActivity extends Activity {
 
     public void letsPlay(View v) {
         Intent game = new Intent(this, GameActivity.class);
+        game.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(game);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out_null);
     }
 
     public void favs(View v) {
-        //Intent favs = new Intent(this, FavsActivity.class);
-        ParseQuery<ParseObject> place = ParseQuery.getQuery("Place");
-        place.getInBackground("BvaY9PC4v5", new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                Intent favs = new Intent(MenuActivity.this, PlaceActivity.class);
-                favs.putExtra("place", new Place(parseObject));
-                startActivity(favs);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out_null);
-            }
-        });
+        Intent favs = new Intent(this, FavsActivity.class);
+        startActivity(favs);
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out_null);
     }
 
     @Override

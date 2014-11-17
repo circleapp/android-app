@@ -4,36 +4,41 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
-import com.where2go.api.Place;
+import com.where2go.api.objects.Place;
 
 
 public class PlaceActivity extends Activity {
 
     public static final String LOG_TAG = "PlaceActivity";
+    protected Place place;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_activiy);
+
+
+
+        Intent intent = getIntent();
+        this.place = (Place) intent.getSerializableExtra("place");
+
+        getActionBar().setTitle(place.getName());
+
         //Put Fragment on place
         FragmentManager man = getFragmentManager();
         FragmentTransaction trans = man.beginTransaction();
-        PlaceFragment placeFragment = new PlaceFragment();
+        PlaceFragment placeFragment = PlaceFragment.newInstance(place);
 
         trans.add(R.id.fragment_view, placeFragment);
         trans.commit();
         //!Put fragment
-
-        Intent intent = getIntent();
-        Place place = (Place) intent.getSerializableExtra("place");
-
-        Log.i(LOG_TAG, place.getName());
 
 /*        ParseQuery<ParseObject> places = ParseQuery.getQuery("Place");
         places.findInBackground(new FindCallback<ParseObject>() {
@@ -46,8 +51,24 @@ public class PlaceActivity extends Activity {
         });*/
     }
 
-    public void onFragmentInteraction(Uri uri) {
+    public void nextPlace(View v){
+        Intent next = new Intent(this, PlaceActivity.class);
+        next.putExtra("place", new Place());
+        startActivity(next);
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out_null);
+    }
 
+    public void exit(View v){
+        Intent menu = new Intent(this, MenuActivity.class);
+        menu.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(menu);
+        overridePendingTransition(R.anim.push_left_in_null, R.anim.push_left_out);
+        finish();
+    }
+
+    public void writeReview(View v){
+        Intent review = new Intent(this, ReviewActivity.class);
+        startActivity(review);
     }
 
     @Override

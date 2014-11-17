@@ -9,7 +9,7 @@
     <application
         android:allowBackup="true"
         android:name=".App"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <meta-data
@@ -47,6 +47,8 @@
         </activity>
         <activity
             android:name=".ReviewActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.MinWidth"
             android:label="@string/title_activity_review">
         </activity>
         <activity

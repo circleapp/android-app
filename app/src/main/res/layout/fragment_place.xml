@@ -46,17 +46,22 @@
         android:layout_height="0dp"
         android:layout_alignParentStart="true"
         android:id="@+id/action_buttons"
-        android:layout_weight="0.08"
+        android:layout_weight="0.09"
         android:background="@android:color/holo_purple"
         android:orientation="horizontal">
 
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="@string/fav"/>
     </LinearLayout>
 
     <ListView
         android:id="@+id/reviews_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.56"
+        android:layout_weight="0.54"
         android:background="@android:color/holo_green_light" />
 
     <LinearLayout
@@ -64,10 +69,22 @@
         android:layout_height="0dp"
         android:layout_alignParentStart="true"
         android:id="@+id/place_buttons"
-        android:layout_weight="0.08"
+        android:layout_weight="0.09"
         android:background="@android:color/holo_red_light"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
+        <Button
+            style="@style/placeActionButton"
+            android:onClick="exit"
+            android:text="@string/finish"/>
+        <Button
+            style="@style/placeActionButton"
+            android:onClick="writeReview"
+            android:text="@string/write_review"/>
+        <Button
+            style="@style/placeActionButton"
+            android:onClick="nextPlace"
+            android:text="@string/next_place" />
     </LinearLayout>
 
 </LinearLayout>

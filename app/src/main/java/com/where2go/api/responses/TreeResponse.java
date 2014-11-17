@@ -16,6 +16,7 @@ public class TreeResponse {
     }
 
     public TreeResponse(List<Place> results){
+        this.error = null;
         this.results = results;
     }
 }
