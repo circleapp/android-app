@@ -5,15 +5,26 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.where2go.api.objects.Place;
 import com.where2go.api.objects.Review;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class PlaceActivity extends Activity {
@@ -25,6 +36,9 @@ public class PlaceActivity extends Activity {
     protected Place nextPlace = null;
     protected ArrayList<Place> nextList;
     protected boolean showNext;
+    protected PlaceFragment placeFragment;
+    protected boolean isFavorite;
+    protected ParseObject parsePlace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +49,7 @@ public class PlaceActivity extends Activity {
         Intent intent = getIntent();
         this.place = (Place) intent.getSerializableExtra("place");
         this.nextList = (ArrayList<Place>) intent.getSerializableExtra("nextList");
+        this.parsePlace = ParseObject.createWithoutData("Place", place.getObjectId());
 
         showNext = false;
         if (nextList.size() > 0) {
@@ -47,11 +62,31 @@ public class PlaceActivity extends Activity {
         //Put Fragment on place
         FragmentManager man = getFragmentManager();
         FragmentTransaction trans = man.beginTransaction();
-        PlaceFragment placeFragment = PlaceFragment.newInstance(place, showNext);
+        placeFragment = PlaceFragment.newInstance(place, showNext);
 
         trans.add(R.id.fragment_view, placeFragment);
         trans.commit();
         //!Put fragment
+
+        ParseQuery query = app.mUser.getRelation("favorites").getQuery();
+        query.whereEqualTo("objectId", place.getObjectId());
+
+        query.findInBackground(new FindCallback() {
+            @Override
+            public void done(List list, ParseException e) {
+                if (e == null) {
+                    if(list.size() > 0){
+                        isFavorite = true;
+                    }else{
+                        isFavorite = false;
+                    }
+                } else {
+                    isFavorite = false;
+                }
+
+                placeFragment.toggleFav(isFavorite);
+            }
+        });
 
 /*        ParseQuery<ParseObject> places = ParseQuery.getQuery("Place");
         places.findInBackground(new FindCallback<ParseObject>() {
@@ -67,8 +102,8 @@ public class PlaceActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REVIEW_REQUEST_CODE){
-            if(resultCode == Activity.RESULT_OK){
+        if (requestCode == REVIEW_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
                 Review review = (Review) data.getSerializableExtra("review");
                 Toast.makeText(this, review.getTitle() + ":\n " + review.getDescription(), Toast.LENGTH_SHORT).show();
             }
@@ -101,8 +136,22 @@ public class PlaceActivity extends Activity {
         startActivityForResult(review, REVIEW_REQUEST_CODE);
     }
 
-    public void addToFavorites(View v){
-        Toast.makeText(this, "Add to favs, Place: " + place.getObjectId() + ", User: " + app.mUser.getObjectId(), Toast.LENGTH_SHORT).show();
+    public void addToFavorites(View v) {
+        ParseRelation favs = app.mUser.getRelation("favorites");
+        if (isFavorite) {
+            favs.remove(parsePlace);
+        } else {
+            favs.add(parsePlace);
+        }
+
+        app.mUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    placeFragment.toggleFav(!isFavorite);
+                }
+            }
+        });
     }
 
     @Override

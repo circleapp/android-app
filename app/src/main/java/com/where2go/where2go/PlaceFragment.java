@@ -19,6 +19,7 @@ public class PlaceFragment extends Fragment {
     protected Place place;
     protected boolean next;
     protected Button mNextPlace;
+    protected Button mFavButton;
 
     private OnFragmentInteractionListener mListener;
 
@@ -33,6 +34,14 @@ public class PlaceFragment extends Fragment {
 
     public PlaceFragment() {
         // Required empty public constructor
+    }
+
+    public void toggleFav(boolean fav){
+        if(fav){
+            mFavButton.setText("Quitar de favoritos");
+        }else{
+            mFavButton.setText("Favorito");
+        }
     }
 
     @Override
@@ -52,7 +61,7 @@ public class PlaceFragment extends Fragment {
         mPlaceName = (TextView) v.findViewById(R.id.place_name);
         mPlaceShortLocation = (TextView) v.findViewById(R.id.place_short_location);
         mNextPlace = (Button) v.findViewById(R.id.nextPlace);
-
+        mFavButton = (Button) v.findViewById(R.id.favButton);
         mPlaceName.setText(place.getName());
         mPlaceShortLocation.setText(place.getShortLocation());
 
