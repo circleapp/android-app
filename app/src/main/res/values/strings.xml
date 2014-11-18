@@ -25,4 +25,9 @@
     <string name="cancel">Cancelar</string>
     <string name="submit">Send</string>
 
+
+    <string name="invalid_rating">Calificación no valida.</string>
+    <string name="invalid_review_title">El título no puede ir vacío.</string>
+    <string name="invalid_review_description">Calificación no valida.</string>
+
 </resources>

@@ -5,36 +5,49 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.where2go.api.objects.Place;
+import com.where2go.api.objects.Review;
+
+import java.util.ArrayList;
 
 
 public class PlaceActivity extends Activity {
 
     public static final String LOG_TAG = "PlaceActivity";
-    protected Place place;
+    protected static final int REVIEW_REQUEST_CODE = 1;
+    protected App app;
+    protected Place place = null;
+    protected Place nextPlace = null;
+    protected ArrayList<Place> nextList;
+    protected boolean showNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_activiy);
-
-
+        app = (App) getApplication();
 
         Intent intent = getIntent();
         this.place = (Place) intent.getSerializableExtra("place");
+        this.nextList = (ArrayList<Place>) intent.getSerializableExtra("nextList");
+
+        showNext = false;
+        if (nextList.size() > 0) {
+            nextPlace = nextList.remove(0);
+            showNext = true;
+        }
 
         getActionBar().setTitle(place.getName());
 
         //Put Fragment on place
         FragmentManager man = getFragmentManager();
         FragmentTransaction trans = man.beginTransaction();
-        PlaceFragment placeFragment = PlaceFragment.newInstance(place);
+        PlaceFragment placeFragment = PlaceFragment.newInstance(place, showNext);
 
         trans.add(R.id.fragment_view, placeFragment);
         trans.commit();
@@ -51,24 +64,45 @@ public class PlaceActivity extends Activity {
         });*/
     }
 
-    public void nextPlace(View v){
-        Intent next = new Intent(this, PlaceActivity.class);
-        next.putExtra("place", new Place());
-        startActivity(next);
-        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out_null);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REVIEW_REQUEST_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                Review review = (Review) data.getSerializableExtra("review");
+                Toast.makeText(this, review.getTitle() + ":\n " + review.getDescription(), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
-    public void exit(View v){
-        Intent menu = new Intent(this, MenuActivity.class);
+    public void nextPlace(View v) {
+        if (!showNext) {
+            return;
+        }
+
+        Intent next = new Intent(this, PlaceActivity.class);
+        next.putExtra("place", nextPlace);
+        next.putExtra("nextList", (ArrayList<Place>) nextList.clone());
+        startActivity(next);
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out_null);
+        finish(); // Quitar si se quiere ver la recomendacion anterior
+    }
+
+    public void exit(View v) {
+        /*Intent menu = new Intent(this, MenuActivity.class);
         menu.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(menu);
-        overridePendingTransition(R.anim.push_left_in_null, R.anim.push_left_out);
+        overridePendingTransition(R.anim.push_left_in_null, R.anim.push_left_out);*/
         finish();
     }
 
-    public void writeReview(View v){
+    public void writeReview(View v) {
         Intent review = new Intent(this, ReviewActivity.class);
-        startActivity(review);
+        startActivityForResult(review, REVIEW_REQUEST_CODE);
+    }
+
+    public void addToFavorites(View v){
+        Toast.makeText(this, "Add to favs, Place: " + place.getObjectId() + ", User: " + app.mUser.getObjectId(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -92,7 +126,7 @@ public class PlaceActivity extends Activity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
-        }else if(id == android.R.id.home){
+        } else if (id == android.R.id.home) {
             onBackPressed();
             return true;
         }

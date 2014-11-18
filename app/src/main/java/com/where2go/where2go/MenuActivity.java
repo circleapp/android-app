@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
@@ -60,18 +61,18 @@ public class MenuActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(app.isUserLogged()){
+        if (app.isUserLogged()) {
             toggleUI(true);
         }
     }
 
-    private void toggleUI(boolean userLogged){
-        if(userLogged){
+    private void toggleUI(boolean userLogged) {
+        if (userLogged) {
             pb.setVisibility(View.GONE);
             facebookBtn.setVisibility(View.GONE);
             playBtn.setVisibility(View.VISIBLE);
             favoritesBtn.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             facebookBtn.setVisibility(View.VISIBLE);
             playBtn.setVisibility(View.GONE);
             favoritesBtn.setVisibility(View.GONE);
@@ -83,9 +84,9 @@ public class MenuActivity extends Activity {
         this.menu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_activiy, menu);
-        if(app.isUserLogged()){
+        if (app.isUserLogged()) {
             menu.setGroupVisible(R.id.group_menu, true);
-        }else{
+        } else {
             menu.setGroupVisible(R.id.group_menu, false);
         }
         return true;
@@ -138,7 +139,7 @@ public class MenuActivity extends Activity {
         if (id == R.id.action_logout) {
             app.mUser.logOut();
 
-            if(ParseUser.getCurrentUser() == null){
+            if (ParseUser.getCurrentUser() == null) {
                 facebookBtn.setVisibility(View.VISIBLE);
                 playBtn.setVisibility(View.GONE);
                 favoritesBtn.setVisibility(View.GONE);

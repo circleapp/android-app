@@ -35,6 +35,9 @@ import com.where2go.api.Where2GoAPI;
 import com.where2go.api.objects.Place;
 import com.where2go.api.responses.TreeResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -49,6 +52,7 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
     protected LocationClient mLocationClient;
     protected Location mLocation;
     protected Place mTree;
+    protected List<Place> mNextList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,8 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
 
                 Log.i(LOG_TAG, String.valueOf(treeResponse.results.size()));
                 if(treeResponse.results.size() > 0){
-                    mTree = treeResponse.results.get(0);
+                    mTree = treeResponse.results.remove(0);
+                    mNextList = treeResponse.results;
                 }
             }
         }
@@ -190,6 +195,7 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
 
                         Intent favs = new Intent(GameActivity.this, PlaceActivity.class);
                         favs.putExtra("place", mTree);
+                        favs.putExtra("nextList", (ArrayList<Place>) mNextList);
                         startActivity(favs);
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out_null);
 
