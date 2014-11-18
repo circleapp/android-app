@@ -19,6 +19,7 @@ import android.view.View.DragShadowBuilder;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +54,8 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
     protected Location mLocation;
     protected Place mTree;
     protected List<Place> mNextList;
+    protected ProgressBar mLoader;
+    protected View mGameLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,9 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
         findViewById(R.id.positive).setOnDragListener(new MyDragListener());
         findViewById(R.id.negative).setOnDragListener(new MyDragListener());
 
+        mLoader = (ProgressBar) findViewById(R.id.loader);
+        mGameLayout = findViewById(R.id.gameLayout);
+
         mLocationClient = new LocationClient(this, this, this);
         mLocationClient.connect();
 
@@ -71,20 +77,22 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
     protected Callback<TreeResponse> treeCallback = new Callback<TreeResponse>() {
         @Override
         public void success(TreeResponse treeResponse, Response response) {
-            Toast.makeText(GameActivity.this, "We did it!!!", Toast.LENGTH_SHORT).show();
             if(treeResponse.error == null){
-
-                Log.i(LOG_TAG, String.valueOf(treeResponse.results.size()));
+                mLoader.setVisibility(ProgressBar.GONE);
+                mGameLayout.setVisibility(View.VISIBLE);
                 if(treeResponse.results.size() > 0){
                     mTree = treeResponse.results.remove(0);
                     mNextList = treeResponse.results;
                 }
+            }else{
+                onBackPressed();
             }
         }
 
         @Override
         public void failure(RetrofitError error) {
             Toast.makeText(GameActivity.this, "Game start failed" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            onBackPressed();
         }
     };
 
@@ -104,6 +112,7 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
             api.getTree(latitude, longitude, radius, treeCallback);
         }else{
             Toast.makeText(this, "No location found!", Toast.LENGTH_SHORT).show();
+            onBackPressed();
         }
     }
 
@@ -268,13 +277,7 @@ public class GameActivity extends Activity implements GooglePlayServicesClient.C
                         isGooglePlayServicesAvailable(this);
         // If Google Play services is available
         if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d("Location Updates",
-                    "Google Play services is available.");
-            // Continue
             return true;
-            // Google Play services was not available for some reason.
-            // resultCode holds the error code.
         } else {
             // Get the error dialog from Google Play services
             Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
