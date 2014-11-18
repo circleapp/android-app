@@ -68,7 +68,7 @@ public class PlaceActivity extends Activity {
         trans.commit();
         //!Put fragment
 
-        ParseQuery query = app.mUser.getRelation("favorites").getQuery();
+        ParseQuery query = app.mUser.getRelation("favs").getQuery();
         query.whereEqualTo("objectId", place.getObjectId());
 
         query.findInBackground(new FindCallback() {
@@ -105,7 +105,13 @@ public class PlaceActivity extends Activity {
         if (requestCode == REVIEW_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Review review = (Review) data.getSerializableExtra("review");
-                Toast.makeText(this, review.getTitle() + ":\n " + review.getDescription(), Toast.LENGTH_SHORT).show();
+                ParseObject parseReview = new ParseObject("Review");
+                parseReview.put("user", app.mUser);
+                parseReview.put("place", parsePlace);
+                parseReview.put("title", review.getTitle());
+                parseReview.put("stars", review.getStars());
+                parseReview.put("description", review.getDescription());
+                parseReview.saveInBackground();
             }
         }
     }
@@ -137,7 +143,7 @@ public class PlaceActivity extends Activity {
     }
 
     public void addToFavorites(View v) {
-        ParseRelation favs = app.mUser.getRelation("favorites");
+        ParseRelation favs = app.mUser.getRelation("favs");
         if (isFavorite) {
             favs.remove(parsePlace);
         } else {
