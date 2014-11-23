@@ -1,5 +1,7 @@
 package com.where2go.api.objects;
 
+import com.parse.ParseObject;
+
 import java.io.Serializable;
 
 /**
@@ -16,6 +18,12 @@ public class Review implements Serializable {
         this.description = description;
         this.stars = stars;
         this.image = null;
+    }
+
+    public Review(ParseObject review){
+        this.title = review.getString("title");
+        this.description = review.getString("description");
+        this.stars = (float) review.getDouble("stars");
     }
 
     public String getTitle() {

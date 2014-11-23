@@ -7,19 +7,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.where2go.api.objects.Place;
+import com.where2go.api.objects.Review;
+import com.where2go.where2go.adapters.PlaceReviewAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PlaceFragment extends Fragment {
 
     protected TextView mPlaceName;
     protected TextView mPlaceShortLocation;
+    protected ListView mReviews;
     protected Place place;
     protected boolean next;
     protected Button mNextPlace;
     protected Button mFavButton;
+    protected ParseObject parsePlace;
 
     private OnFragmentInteractionListener mListener;
 
@@ -36,10 +49,10 @@ public class PlaceFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public void toggleFav(boolean fav){
-        if(fav){
+    public void toggleFav(boolean fav) {
+        if (fav) {
             mFavButton.setText("Quitar de favoritos");
-        }else{
+        } else {
             mFavButton.setText("Favorito");
         }
     }
@@ -60,12 +73,34 @@ public class PlaceFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_place, container, false);
         mPlaceName = (TextView) v.findViewById(R.id.place_name);
         mPlaceShortLocation = (TextView) v.findViewById(R.id.place_short_location);
+        mReviews = (ListView) v.findViewById(R.id.reviews_list);
         mNextPlace = (Button) v.findViewById(R.id.nextPlace);
         mFavButton = (Button) v.findViewById(R.id.favButton);
         mPlaceName.setText(place.getName());
         mPlaceShortLocation.setText(place.getShortLocation());
 
-        if(!next){
+        final ArrayList<Review> reviews = new ArrayList<Review>();
+        final PlaceReviewAdapter reviewAdapter = new PlaceReviewAdapter(getActivity(), reviews);
+
+        mReviews.setAdapter(reviewAdapter);
+
+        ParseQuery reviewsQuery = ParseQuery.getQuery("Review");
+        reviewsQuery.whereEqualTo("place", ParseObject.createWithoutData("Place", place.getObjectId()));
+        reviewsQuery.findInBackground(new FindCallback() {
+            @Override
+            public void done(List list, ParseException e) {
+                if (e == null) {
+                    for (Object review : list) {
+                        reviews.add(new Review((ParseObject) review));
+                        reviewAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), R.string.reviews_list_error, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        if (!next) {
             mNextPlace.setVisibility(Button.GONE);
         }
 

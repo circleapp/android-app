@@ -30,4 +30,9 @@
     <string name="invalid_review_title">El título no puede ir vacío.</string>
     <string name="invalid_review_description">Calificación no valida.</string>
 
+    <string name="reviews_list_error">No se pudo conectar al servidor para reviews</string>
+
+    <string name="loremmediuam">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sodales et sem eget euismod. Fusce ullamcorper nisi massa, ut convallis ligula lacinia ac. Aenean ultrices metus arcu, sed scelerisque mi mollis ac. Vivamus semper scelerisque fringilla. In suscipit mi nisl. Nam lobortis libero odio. Donec lobortis tempus turpis.
+
+</string>
 </resources>
