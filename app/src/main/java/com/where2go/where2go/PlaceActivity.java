@@ -133,6 +133,10 @@ public class PlaceActivity extends Activity {
         finish();
     }
 
+    public void uploadPhoto(View v){
+
+    }
+
     public void writeReview(View v) {
         Intent review = new Intent(this, ReviewActivity.class);
         startActivityForResult(review, REVIEW_REQUEST_CODE);

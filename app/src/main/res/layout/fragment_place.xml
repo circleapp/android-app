@@ -57,6 +57,14 @@
             android:id="@+id/favButton"
             android:onClick="addToFavorites"
             android:text="@string/fav"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/picButton"
+            android:onClick="uploadPhoto"
+            android:text="@string/photo_upload"/>
     </LinearLayout>
 
     <ListView

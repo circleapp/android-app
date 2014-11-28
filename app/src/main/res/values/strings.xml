@@ -18,6 +18,7 @@
     <string name="write_review">Reseña</string>
     <string name="finish">Salir</string>
     <string name="fav">Favorito</string>
+    <string name="photo_upload">Subir Foto</string>
     <string name="title">Titulo</string>
     <string name="description">Descripcion</string>
     <string name="review_label">Escribe tu reseña:</string>
