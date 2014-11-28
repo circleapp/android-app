@@ -17,51 +17,50 @@
         android:layout_marginTop="50dp"
         android:background="@drawable/logo" />
 
-    <Button
+    <com.facebook.widget.LoginButton
         android:id="@+id/facebook_btn"
-        android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="99dp"
         android:onClick="loginFacebook"
-        android:minWidth="@dimen/home_btn_minWidth"
-        android:text="@string/facebook" />
+        android:visibility="visible" />
+
 
     <Button
         android:id="@+id/play_btn"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="79dp"
-        android:onClick="letsPlay"
         android:minWidth="@dimen/home_btn_minWidth"
-        android:text="@string/jugar" />
+        android:onClick="letsPlay"
+        android:text="@string/jugar"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/favorites"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/play_btn"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="7dp"
-        android:text="@string/favs"
+        android:minWidth="@dimen/home_btn_minWidth"
         android:onClick="favs"
-        android:minWidth="@dimen/home_btn_minWidth"/>
+        android:text="@string/favs"
+        android:visibility="gone" />
 
     <ProgressBar
+        android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
-        android:visibility="gone"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
         android:layout_below="@id/logo"
-        android:id="@+id/progressBar"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="84dp"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

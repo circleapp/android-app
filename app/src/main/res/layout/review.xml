@@ -9,12 +9,17 @@
     android:layout_gravity="start"
     android:orientation="horizontal">
 
-    <at.markushi.ui.CircleButton
+    <!--<at.markushi.ui.CircleButton
         android:id="@+id/userpic"
         android:layout_width="64dip"
         android:layout_height="64dip"
         app:cb_color="#99CC00"
-        app:cb_pressedRingWidth="8dip" />
+        app:cb_pressedRingWidth="8dip" />-->
+
+    <ImageView
+        android:id="@+id/userpic"
+        android:layout_width="64dip"
+        android:layout_height="64dip" />
 
     <LinearLayout
         android:id="@+id/review"

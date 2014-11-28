@@ -99,6 +99,7 @@ public class PlaceFragment extends Fragment {
         ParseQuery reviewsQuery = ParseQuery.getQuery("Review");
         reviewsQuery.whereEqualTo("place", ParseObject.createWithoutData("Place", place.getObjectId()));
         reviewsQuery.orderByDescending("createdAt");
+        reviewsQuery.include("user");
 
         reviewsQuery.findInBackground(new FindCallback() {
             @Override

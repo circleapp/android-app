@@ -6,10 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.where2go.api.objects.Review;
 import com.where2go.where2go.R;
 
@@ -40,7 +42,7 @@ public class PlaceReviewAdapter extends ArrayAdapter<Review>{
             holder = new ViewHolder();
             holder.container = view.findViewById(R.id.container);
             holder.review = holder.container.findViewById(R.id.review);
-//            holder.userpic = (ImageButton) holder.container.findViewById(R.id.userpic);
+            holder.userpic = (ImageView) holder.container.findViewById(R.id.userpic);
             holder.username = (TextView) holder.review.findViewById(R.id.username);
             holder.rating = (RatingBar) holder.review.findViewById(R.id.rating);
             holder.title = (TextView) holder.review.findViewById(R.id.title);
@@ -55,7 +57,9 @@ public class PlaceReviewAdapter extends ArrayAdapter<Review>{
 
         //Set values of Review in GUI
         //holder.userpic.setImageResource(); // Picasso
-        holder.username.setText(review.getTitle());
+
+        Picasso.with(mContext).load("https://graph.facebook.com/"+ review.getFacebookId() +"/picture?type=large").resize(100, 100).centerCrop().into(holder.userpic);
+        holder.username.setText(review.getUserName());
         holder.title.setText(review.getTitle());
         holder.description.setText(review.getDescription());
         holder.rating.setRating(review.getStars());
@@ -66,7 +70,7 @@ public class PlaceReviewAdapter extends ArrayAdapter<Review>{
     protected class ViewHolder{
         View container;
         View review;
-        ImageButton userpic;
+        ImageView userpic;
         RatingBar rating;
         TextView username;
         TextView title;

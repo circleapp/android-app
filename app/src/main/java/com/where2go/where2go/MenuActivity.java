@@ -10,6 +10,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.model.GraphUser;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -17,6 +21,9 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MenuActivity extends Activity {
@@ -115,9 +122,10 @@ public class MenuActivity extends Activity {
     public void loginFacebook(View v) {
         facebookBtn.setVisibility(View.GONE);
         pb.setVisibility(View.VISIBLE);
-        ParseFacebookUtils.logIn(this, new LogInCallback() {
+        List<String> perms = Arrays.asList("email", "public_profile");
+        ParseFacebookUtils.logIn(perms, this, new LogInCallback() {
             @Override
-            public void done(ParseUser user, ParseException e) {
+            public void done(final ParseUser user, ParseException e) {
                 pb.setVisibility(View.GONE);
                 if (user == null) {
                     facebookBtn.setVisibility(View.VISIBLE);
@@ -125,6 +133,24 @@ public class MenuActivity extends Activity {
                     app.loginUser(user);
                     menu.setGroupVisible(R.id.group_menu, true);
                     toggleUI(true);
+
+                    Request.executeMeRequestAsync(Session.getActiveSession(), new Request.GraphUserCallback() {
+                        // callback after Graph API response with user object
+                        @Override
+                        public void onCompleted(GraphUser u, Response response) {
+                            String fullName = u.getName();
+                            String email = u.getProperty("email").toString();
+                            String facebookId = u.getId();
+
+                            app.mUser.setEmail(email);
+                            app.mUser.setUsername(fullName);
+                            app.mUser.put("facebookId", facebookId);
+
+                            app.mUser.saveInBackground();
+                            //Do whatever you want
+
+                        }
+                    });
                 }
             }
         });

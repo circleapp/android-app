@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.facebook.Session;
 import com.parse.Parse;
 import com.parse.ParseUser;
 import com.parse.ParseFacebookUtils;
@@ -30,7 +31,6 @@ public class App extends Application {
 
         Parse.initialize(this, "pjDqEx0JZwcC6mWcycXAQ6lIWaldcGtynfLIkR0B", "1pCIRvx6NNtYEZwuVNWgOeEvkf4A4NlqF6wOtJJs");
         ParseFacebookUtils.initialize("748940688492803");
-
         isUserLogged();
 
     }
@@ -43,6 +43,11 @@ public class App extends Application {
 
     public void logoutUser(){
         mPreferencesEditor.putBoolean(mSessionKey, false);
+
+        Session s = Session.getActiveSession();
+        if(s != null){
+            s.closeAndClearTokenInformation();
+        }
     }
 
     public boolean isUserLogged(){
