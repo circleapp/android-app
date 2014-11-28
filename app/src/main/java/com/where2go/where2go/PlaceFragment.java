@@ -33,6 +33,8 @@ public class PlaceFragment extends Fragment {
     protected Button mNextPlace;
     protected Button mFavButton;
     protected ParseObject parsePlace;
+    protected PlaceReviewAdapter mReviewAdapter;
+    protected ArrayList<Review> mReviewsList;
 
     private OnFragmentInteractionListener mListener;
 
@@ -79,20 +81,33 @@ public class PlaceFragment extends Fragment {
         mPlaceName.setText(place.getName());
         mPlaceShortLocation.setText(place.getShortLocation());
 
-        final ArrayList<Review> reviews = new ArrayList<Review>();
-        final PlaceReviewAdapter reviewAdapter = new PlaceReviewAdapter(getActivity(), reviews);
+        mReviewsList = new ArrayList<Review>();
+        mReviewAdapter = new PlaceReviewAdapter(getActivity(), mReviewsList);
 
-        mReviews.setAdapter(reviewAdapter);
+        mReviews.setAdapter(mReviewAdapter);
 
+        loadReviews();
+
+        if (!next) {
+            mNextPlace.setVisibility(Button.GONE);
+        }
+
+        return v;
+    }
+
+    public void loadReviews(){
         ParseQuery reviewsQuery = ParseQuery.getQuery("Review");
         reviewsQuery.whereEqualTo("place", ParseObject.createWithoutData("Place", place.getObjectId()));
+        reviewsQuery.orderByDescending("createdAt");
+
         reviewsQuery.findInBackground(new FindCallback() {
             @Override
             public void done(List list, ParseException e) {
                 if (e == null) {
+                    mReviewsList.clear();
                     for (Object review : list) {
-                        reviews.add(new Review((ParseObject) review));
-                        reviewAdapter.notifyDataSetChanged();
+                        mReviewsList.add(new Review((ParseObject) review));
+                        mReviewAdapter.notifyDataSetChanged();
                     }
                 } else {
                     Toast.makeText(getActivity(), R.string.reviews_list_error, Toast.LENGTH_SHORT).show();
@@ -100,11 +115,6 @@ public class PlaceFragment extends Fragment {
             }
         });
 
-        if (!next) {
-            mNextPlace.setVisibility(Button.GONE);
-        }
-
-        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

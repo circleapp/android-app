@@ -88,15 +88,6 @@ public class PlaceActivity extends Activity {
             }
         });
 
-/*        ParseQuery<ParseObject> places = ParseQuery.getQuery("Place");
-        places.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-                for(ParseObject place : parseObjects){
-                    //Log.i(LOG_TAG, place.getParseGeoPoint("location"));
-                }
-            }
-        });*/
     }
 
     @Override
@@ -111,7 +102,12 @@ public class PlaceActivity extends Activity {
                 parseReview.put("title", review.getTitle());
                 parseReview.put("stars", review.getStars());
                 parseReview.put("description", review.getDescription());
-                parseReview.saveInBackground();
+                parseReview.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        placeFragment.loadReviews();
+                    }
+                });
             }
         }
     }
