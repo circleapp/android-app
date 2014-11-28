@@ -1,6 +1,8 @@
 package com.where2go.where2go;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,10 +10,20 @@ import android.view.MenuItem;
 
 public class FavsActivity extends Activity {
     //910-213
+    
+    protected FavoritesFragment favsFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favs);
+
+        FragmentManager man = getFragmentManager();
+        FragmentTransaction trans = man.beginTransaction();
+        favsFragment = FavoritesFragment.newInstance();
+
+        trans.add(R.id.fragment_view, favsFragment);
+        trans.commit();
     }
 
 
